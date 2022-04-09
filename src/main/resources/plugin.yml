@@ -1,0 +1,5 @@
+name: OsterEvent
+version: '${version}'
+main: de.skycave.osterevent.OsterEvent
+api-version: 1.18
+authors: [ Hakuyamu ]
