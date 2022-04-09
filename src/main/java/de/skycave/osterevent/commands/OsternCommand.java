@@ -1,6 +1,7 @@
 package de.skycave.osterevent.commands;
 
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Sorts;
 import de.skycave.osterevent.OsterEvent;
 import de.skycave.osterevent.enums.Message;
 import de.skycave.osterevent.enums.PlayerMode;
@@ -55,20 +56,20 @@ public class OsternCommand implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 if (args.length < 2) {
-                    // TODO syntax
+                    Message.EDIT_SYNTAX.get().send(player);
                     break;
                 }
                 int id;
                 try {
                     id = Integer.parseInt(args[1]);
                 } catch (NumberFormatException e) {
-                    // TODO msg
+                    Message.INVALID_NUMBER.get().send(player);
                     break;
                 }
                 Bson filter = Filters.eq("serial_id", id);
                 Reward reward = main.getRewards().find(filter).first();
                 if (reward == null) {
-                    // TODO msg
+                    Message.REWARD_NONEXISTENT.get().send(player);
                     break;
                 }
                 main.getRewardCache().put(player.getUniqueId(), reward);
@@ -82,20 +83,20 @@ public class OsternCommand implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 if (args.length < 2) {
-                    // TODO syntax
+                    Message.MOVE_SYNTAX.get().send(player);
                     break;
                 }
                 int id;
                 try {
                     id = Integer.parseInt(args[1]);
                 } catch (NumberFormatException e) {
-                    // TODO msg
+                    Message.INVALID_NUMBER.get().send(player);
                     break;
                 }
                 Bson filter = Filters.eq("serial_id", id);
                 Reward reward = main.getRewards().find(filter).first();
                 if (reward == null) {
-                    // TODO msg
+                    Message.REWARD_NONEXISTENT.get().send(player);
                     break;
                 }
                 main.getRewardCache().put(player.getUniqueId(), reward);
@@ -104,48 +105,79 @@ public class OsternCommand implements CommandExecutor, TabCompleter {
             }
             case "delete" -> {
                 if (args.length < 2) {
-                    // TODO syntax
+                    Message.DELETE_SYNTAX.get().send(sender);
                     break;
                 }
                 int id;
                 try {
                     id = Integer.parseInt(args[1]);
                 } catch (NumberFormatException e) {
-                    // TODO msg
+                    Message.INVALID_NUMBER.get().send(sender);
                     break;
                 }
                 Bson filter = Filters.eq("serial_id", id);
                 Reward reward = main.getRewards().findOneAndDelete(filter);
                 if (reward == null) {
-                    // TODO msg
+                    Message.REWARD_NONEXISTENT.get().send(sender);
                     break;
                 }
                 // TODO msg
             }
             case "list" -> {
+                int page;
+                if (args.length < 2) {
+                    page = 1;
+                } else {
+                    try {
+                        page = Integer.parseInt(args[1]);
+                    } catch (NumberFormatException e) {
+                        Message.INVALID_NUMBER.get().send(sender);
+                        break;
+                    }
+                }
 
+                long entries = main.getRewards().countDocuments();
+                if (entries == 0) {
+                    // TODO msg
+                    break;
+                }
+
+                int pages = (int) (entries / 10) + 1;
+                page = Math.min(page, pages);
+                int skip = (page - 1) * 10;
+
+                List<Reward> rewards = main.getRewards().find()
+                        .sort(Sorts.ascending("serial_id"))
+                        .skip(skip)
+                        .limit(10)
+                        .into(new ArrayList<>());
+
+                // TODO header
+                for (Reward reward : rewards) {
+                    // TODO msg
+                }
+                // TODO footer
             }
             case "info" -> {
                 if (args.length < 2) {
-                    // TODO syntax
+                    Message.INFO_SYNTAX.get().send(sender);
                     break;
                 }
                 int id;
                 try {
                     id = Integer.parseInt(args[1]);
                 } catch (NumberFormatException e) {
-                    // TODO msg
+                    Message.INVALID_NUMBER.get().send(sender);
                     break;
                 }
                 Bson filter = Filters.eq("serial_id", id);
                 Reward reward = main.getRewards().find(filter).first();
                 if (reward == null) {
-                    // TODO msg
+                    Message.REWARD_NONEXISTENT.get().send(sender);
                     break;
                 }
                 // TODO msg
             }
-            case "help" -> sendHelp(sender);
             case "cancel" -> {
                 if (!(sender instanceof Player player)) {
                     Message.PLAYER_ONLY.get().send(sender);
@@ -158,11 +190,20 @@ public class OsternCommand implements CommandExecutor, TabCompleter {
                     Message.CANCEL_NONE.get().send(player);
                 }
             }
+            case "help" -> sendHelp(sender);
         }
         return true;
     }
+
     private void sendHelp(CommandSender sender) {
-        // TODO help
+        Message.HELP_CREATE.get().send(sender, false);
+        Message.HELP_EDIT.get().send(sender, false);
+        Message.HELP_MOVE.get().send(sender, false);
+        Message.HELP_DELETE.get().send(sender, false);
+        Message.HELP_LIST.get().send(sender, false);
+        Message.HELP_INFO.get().send(sender, false);
+        Message.HELP_CANCEL.get().send(sender, false);
+        Message.HELP_HELP.get().send(sender, false);
     }
 
     @Override
@@ -178,12 +219,12 @@ public class OsternCommand implements CommandExecutor, TabCompleter {
             arguments.add("delete");
             arguments.add("list");
             arguments.add("info");
-            arguments.add("help");
             arguments.add("cancel");
+            arguments.add("help");
             StringUtil.copyPartialMatches(args[0], arguments, completions);
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("create")) {
-                arguments.add("onetime");
+                arguments.add("einmalig");
             }
             StringUtil.copyPartialMatches(args[1], arguments, completions);
         }
