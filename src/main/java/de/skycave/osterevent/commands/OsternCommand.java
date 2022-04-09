@@ -6,12 +6,16 @@ import de.skycave.osterevent.OsterEvent;
 import de.skycave.osterevent.enums.Message;
 import de.skycave.osterevent.enums.PlayerMode;
 import de.skycave.osterevent.models.Reward;
+import net.kyori.adventure.text.Component;
 import org.bson.conversions.Bson;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,11 +46,13 @@ public class OsternCommand implements CommandExecutor, TabCompleter {
                     Message.PLAYER_ONLY.get().send(sender);
                     return true;
                 }
-                // TODO msg
                 Reward reward = new Reward();
                 reward.setOnlyOnce(args.length >= 2);
                 reward.setSerialId(main.getConfiguration().getInt("current_id") + 1);
-                // TODO msg
+                Message.CREATE_START.get().replace("%id", "" + reward.getSerialId()).send(player);
+                if (args.length >= 2) {
+                    Message.CREATE_ONLY_ONCE.get().send(player);
+                }
                 main.getRewardCache().put(player.getUniqueId(), reward);
                 main.getPlayerModes().put(player.getUniqueId(), PlayerMode.CREATE);
             }
@@ -74,8 +80,13 @@ public class OsternCommand implements CommandExecutor, TabCompleter {
                 }
                 main.getRewardCache().put(player.getUniqueId(), reward);
                 main.getPlayerModes().put(player.getUniqueId(), PlayerMode.EDIT);
-                // TODO msg
-                // TODO edit inventory
+                Message.EDIT_START.get().send(player);
+                Inventory inv = Bukkit.createInventory(null, 9,
+                        Component.text(Message.EDIT_TITLE.get().get(false)));
+                for (ItemStack item : reward.getRewards()) {
+                    inv.addItem(item);
+                }
+                player.openInventory(inv);
             }
             case "move" -> {
                 if (!(sender instanceof Player player)) {
@@ -101,7 +112,7 @@ public class OsternCommand implements CommandExecutor, TabCompleter {
                 }
                 main.getRewardCache().put(player.getUniqueId(), reward);
                 main.getPlayerModes().put(player.getUniqueId(), PlayerMode.MOVE);
-                // TODO msg
+                Message.MOVE_START.get().send(player);
             }
             case "delete" -> {
                 if (args.length < 2) {
@@ -121,7 +132,7 @@ public class OsternCommand implements CommandExecutor, TabCompleter {
                     Message.REWARD_NONEXISTENT.get().send(sender);
                     break;
                 }
-                // TODO msg
+                Message.DELETE_SUCCESS.get().send(sender);
             }
             case "list" -> {
                 int page;

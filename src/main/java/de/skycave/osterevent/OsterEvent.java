@@ -6,14 +6,20 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import de.skycave.osterevent.codecs.*;
+import de.skycave.osterevent.commands.OsternCommand;
 import de.skycave.osterevent.enums.PlayerMode;
 import de.skycave.osterevent.interfaces.PrefixHolder;
+import de.skycave.osterevent.listeners.InventoryCloseListener;
+import de.skycave.osterevent.listeners.PlayerInteractListener;
 import de.skycave.osterevent.models.AutoSaveConfig;
 import de.skycave.osterevent.models.Reward;
 import de.skycave.osterevent.models.User;
 import de.skycave.osterevent.utils.FileUtils;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -44,9 +50,27 @@ public final class OsterEvent extends JavaPlugin implements PrefixHolder {
         rewards = db.getCollection("rewards", Reward.class);
         users = db.getCollection("users", User.class);
 
+        // resources
         if (FileUtils.copyResource(this, "config.yml")) {
             configuration = new AutoSaveConfig(new File(getDataFolder(), "config.yml"));
         }
+
+        // commands
+        registerCommand("ostern", new OsternCommand(this));
+
+        // listeners
+        PluginManager pm = getServer().getPluginManager();
+        pm.registerEvents(new InventoryCloseListener(this), this);
+        pm.registerEvents(new PlayerInteractListener(this), this);
+    }
+
+    private void registerCommand(String command, CommandExecutor executor) {
+        PluginCommand cmd = getCommand(command);
+        if (cmd == null) {
+            getLogger().severe("No entry for the command " + command + " found in the plugin.yml.");
+            return;
+        }
+        cmd.setExecutor(executor);
     }
 
     @Override

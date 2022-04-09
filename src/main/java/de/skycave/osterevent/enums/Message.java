@@ -22,14 +22,23 @@ public enum Message {
     HELP_CANCEL("&a/ostern cancel &8- &7Bricht die aktuelle Aktion ab"),
     HELP_HELP("&a/ostern help &8- &7Zeigt Hilfe an"),
 
+    // create
+    CREATE_START("&aErstellung eines neuen Geschenkes mit der Nummer &2%id &agestartet. Klicke auf einen Block, um die Position zu setzen."),
+    CREATE_ONLY_ONCE("&eDas Geschenk wird nur von einem Spieler einlösbar sein."),
+
     // edit
     EDIT_SYNTAX("&e/ostern edit <Nummer>"),
+    EDIT_START("&aLege die Belohnungen in das geöffnete Inventar ab."),
+    EDIT_TITLE("&2Belohnungen hier ablegen"),
+    EDIT_SUCCESS("&aBelohnungen für Geschenk Nummer &2%id &aerfolgreich angepasst."),
 
     // move
     MOVE_SYNTAX("&e/ostern move <Nummer>"),
+    MOVE_START("&aKlicke auf einen Block, um die Position zu setzen."),
 
     // delete
     DELETE_SYNTAX("&e/ostern delete <Nummer>"),
+    DELETE_SUCCESS("&aDas Geschenk mit der Nummer &2%id &awurde erfolgreich entfernt."),
 
     // info
     INFO_SYNTAX("&e/ostern info <Nummer>"),
