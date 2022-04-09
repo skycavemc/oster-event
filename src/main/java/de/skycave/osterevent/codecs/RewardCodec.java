@@ -2,21 +2,51 @@ package de.skycave.osterevent.codecs;
 
 import de.skycave.osterevent.models.Reward;
 import org.bson.BsonReader;
+import org.bson.BsonType;
 import org.bson.BsonWriter;
 import org.bson.codecs.Codec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
+import org.bson.codecs.configuration.CodecRegistry;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RewardCodec implements Codec<Reward> {
 
-    private Codec<Location> locationCodec;
-    private Codec<ItemStack> itemStackCodec;
+    private final Codec<Location> locationCodec;
+    private final Codec<ItemStack> itemStackCodec;
+
+    public RewardCodec(@NotNull CodecRegistry registry) {
+        locationCodec = registry.get(Location.class);
+        itemStackCodec = registry.get(ItemStack.class);
+    }
 
     @Override
     public Reward decode(BsonReader reader, DecoderContext decoderContext) {
-        return null;
+        Reward reward = new Reward();
+        reader.readStartDocument();
+        while (reader.readBsonType() != BsonType.END_OF_DOCUMENT) {
+            switch (reader.readName()) {
+                case "_id" -> reward.setObjectId(reader.readObjectId());
+                case "serial_id" -> reward.setSerialId(reader.readInt32());
+                case "location" -> reward.setLocation(locationCodec.decode(reader, decoderContext));
+                case "rewards" -> {
+                    reader.readStartArray();
+                    List<ItemStack> rewards = new ArrayList<>();
+                    while (reader.readBsonType() == BsonType.BINARY) {
+                        rewards.add(itemStackCodec.decode(reader, decoderContext));
+                    }
+                    reward.setRewards(rewards);
+                    reader.readEndArray();
+                }
+                default -> reader.skipValue();
+            }
+        }
+        return reward;
     }
 
     @Override

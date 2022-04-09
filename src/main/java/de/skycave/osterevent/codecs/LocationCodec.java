@@ -15,21 +15,21 @@ public class LocationCodec implements Codec<Location> {
 
     @Override
     public Location decode(BsonReader reader, DecoderContext decoderContext) {
-        Location result = new Location(null, 0, 0, 0);
+        Location location = new Location(null, 0, 0, 0);
         reader.readStartDocument();
         while (reader.readBsonType() != BsonType.END_OF_DOCUMENT) {
             switch (reader.readName()) {
-                case "x" -> result.setX(reader.readDouble());
-                case "y" -> result.setY(reader.readDouble());
-                case "z" -> result.setZ(reader.readDouble());
-                case "yaw" -> result.setYaw((float) reader.readDouble());
-                case "pitch" -> result.setPitch((float) reader.readDouble());
-                case "world" -> result.setWorld(Bukkit.getWorld(UUID.fromString(reader.readString())));
+                case "x" -> location.setX(reader.readDouble());
+                case "y" -> location.setY(reader.readDouble());
+                case "z" -> location.setZ(reader.readDouble());
+                case "yaw" -> location.setYaw((float) reader.readDouble());
+                case "pitch" -> location.setPitch((float) reader.readDouble());
+                case "world" -> location.setWorld(Bukkit.getWorld(UUID.fromString(reader.readString())));
                 default -> reader.skipValue();
             }
         }
         reader.readEndDocument();
-        return result;
+        return location;
     }
 
     @Override

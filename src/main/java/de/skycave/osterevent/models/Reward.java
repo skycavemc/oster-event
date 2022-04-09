@@ -29,20 +29,28 @@ public class Reward {
         return objectId;
     }
 
+    public void setObjectId(ObjectId objectId) {
+        this.objectId = objectId;
+    }
+
     public int getSerialId() {
         return serialId;
+    }
+
+    public void setSerialId(int serialId) {
+        this.serialId = serialId;
     }
 
     public Location getLocation() {
         return location;
     }
 
-    public List<ItemStack> getRewards() {
-        return rewards;
-    }
-
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public List<ItemStack> getRewards() {
+        return rewards;
     }
 
     public void setRewards(List<ItemStack> rewards) {
