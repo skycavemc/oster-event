@@ -16,14 +16,10 @@ public class Reward {
     private int serialId;
     private Location location;
     private List<ItemStack> rewards;
+    @BsonProperty("only_once")
+    private boolean onlyOnce;
 
     public Reward() {}
-
-    public Reward(int serialId, Location location, List<ItemStack> rewards) {
-        this.serialId = serialId;
-        this.location = location;
-        this.rewards = rewards;
-    }
 
     public ObjectId getObjectId() {
         return objectId;
@@ -55,5 +51,13 @@ public class Reward {
 
     public void setRewards(List<ItemStack> rewards) {
         this.rewards = rewards;
+    }
+
+    public boolean isOnlyOnce() {
+        return onlyOnce;
+    }
+
+    public void setOnlyOnce(boolean onlyOnce) {
+        this.onlyOnce = onlyOnce;
     }
 }

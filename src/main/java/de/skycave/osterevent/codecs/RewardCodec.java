@@ -43,6 +43,7 @@ public class RewardCodec implements Codec<Reward> {
                     reward.setRewards(rewards);
                     reader.readEndArray();
                 }
+                case "only_once" -> reward.setOnlyOnce(reader.readBoolean());
                 default -> reader.skipValue();
             }
         }
@@ -62,6 +63,8 @@ public class RewardCodec implements Codec<Reward> {
                 itemStackCodec.encode(writer, item, encoderContext);
             }
             writer.writeEndArray();
+            writer.writeName("only_once");
+            writer.writeBoolean(value.isOnlyOnce());
             writer.writeEndDocument();
         }
     }
