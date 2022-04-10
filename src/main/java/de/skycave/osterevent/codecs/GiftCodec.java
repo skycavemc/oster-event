@@ -1,6 +1,7 @@
 package de.skycave.osterevent.codecs;
 
-import de.skycave.osterevent.models.Reward;
+import de.skycave.osterevent.enums.GiftState;
+import de.skycave.osterevent.models.Gift;
 import org.bson.BsonReader;
 import org.bson.BsonType;
 import org.bson.BsonWriter;
@@ -15,19 +16,21 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RewardCodec implements Codec<Reward> {
+public class GiftCodec implements Codec<Gift> {
 
     private final Codec<Location> locationCodec;
     private final Codec<ItemStack> itemStackCodec;
+    private final Codec<GiftState> giftStateCodec;
 
-    public RewardCodec(@NotNull CodecRegistry registry) {
+    public GiftCodec(@NotNull CodecRegistry registry) {
         locationCodec = registry.get(Location.class);
         itemStackCodec = registry.get(ItemStack.class);
+        giftStateCodec = registry.get(GiftState.class);
     }
 
     @Override
-    public Reward decode(BsonReader reader, DecoderContext decoderContext) {
-        Reward reward = new Reward();
+    public Gift decode(BsonReader reader, DecoderContext decoderContext) {
+        Gift reward = new Gift();
         reader.readStartDocument();
         while (reader.readBsonType() != BsonType.END_OF_DOCUMENT) {
             switch (reader.readName()) {
@@ -43,7 +46,7 @@ public class RewardCodec implements Codec<Reward> {
                     reward.setRewards(rewards);
                     reader.readEndArray();
                 }
-                case "only_once" -> reward.setOnlyOnce(reader.readBoolean());
+                case "only_once" -> reward.setGiftState(giftStateCodec.decode(reader, decoderContext));
                 default -> reader.skipValue();
             }
         }
@@ -51,7 +54,7 @@ public class RewardCodec implements Codec<Reward> {
     }
 
     @Override
-    public void encode(BsonWriter writer, Reward value, EncoderContext encoderContext) {
+    public void encode(BsonWriter writer, Gift value, EncoderContext encoderContext) {
         if (value != null) {
             writer.writeStartDocument();
             writer.writeName("serial_id");
@@ -63,14 +66,14 @@ public class RewardCodec implements Codec<Reward> {
                 itemStackCodec.encode(writer, item, encoderContext);
             }
             writer.writeEndArray();
-            writer.writeName("only_once");
-            writer.writeBoolean(value.isOnlyOnce());
+            writer.writeName("gift_state");
+            giftStateCodec.encode(writer, value.getGiftState(), encoderContext);
             writer.writeEndDocument();
         }
     }
 
     @Override
-    public Class<Reward> getEncoderClass() {
-        return Reward.class;
+    public Class<Gift> getEncoderClass() {
+        return Gift.class;
     }
 }

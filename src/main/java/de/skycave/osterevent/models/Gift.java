@@ -1,5 +1,6 @@
 package de.skycave.osterevent.models;
 
+import de.skycave.osterevent.enums.GiftState;
 import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
@@ -8,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class Reward {
+public class Gift {
 
     @BsonId
     private ObjectId objectId;
@@ -16,10 +17,10 @@ public class Reward {
     private int serialId;
     private Location location;
     private List<ItemStack> rewards;
-    @BsonProperty("only_once")
-    private boolean onlyOnce;
+    @BsonProperty("gift_state")
+    private GiftState giftState;
 
-    public Reward() {}
+    public Gift() {}
 
     public ObjectId getObjectId() {
         return objectId;
@@ -53,11 +54,11 @@ public class Reward {
         this.rewards = rewards;
     }
 
-    public boolean isOnlyOnce() {
-        return onlyOnce;
+    public GiftState getGiftState() {
+        return giftState;
     }
 
-    public void setOnlyOnce(boolean onlyOnce) {
-        this.onlyOnce = onlyOnce;
+    public void setGiftState(GiftState giftState) {
+        this.giftState = giftState;
     }
 }

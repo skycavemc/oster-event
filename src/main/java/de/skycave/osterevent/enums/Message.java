@@ -28,13 +28,14 @@ public enum Message {
 
     // edit
     EDIT_SYNTAX("&e/ostern edit <Nummer>"),
-    EDIT_START("&aLege die Belohnungen in das geöffnete Inventar ab."),
+    EDIT_START("&aLege die Belohnungen in das geöffnete Inventar hinein."),
     EDIT_TITLE("&2Belohnungen hier ablegen"),
     EDIT_SUCCESS("&aBelohnungen für Geschenk Nummer &2%id &aerfolgreich angepasst."),
 
     // move
     MOVE_SYNTAX("&e/ostern move <Nummer>"),
     MOVE_START("&aKlicke auf einen Block, um die Position zu setzen."),
+    MOVE_SUCCESS("&aPosition für Geschenk Nummer &2%id &awurde erfolgreich angepasst."),
 
     // delete
     DELETE_SYNTAX("&e/ostern delete <Nummer>"),
@@ -46,6 +47,12 @@ public enum Message {
     // cancel
     CANCEL("&cAktion wurde abgebrochen."),
     CANCEL_NONE("&cDu hast keine Aktion, die du abbrechen kannst."),
+
+    // claim
+    CLAIM_ALREADY_ONCE("&cDieses Geschenk ist nur von einem Spieler einlösbar und wurde bereits gefunden."),
+    CLAIM_ALREADY("&cDu hast dieses Geschenk bereits gefunden."),
+    CLAIM("&aDu hast ein Geschenk gefunden! Du erhältst folgende Belohnungen: &e%rewards"),
+    CLAIM_ONCE("&6Dieses Geschenk war nur von einem einzigen Spieler einlösbar! Herzlichen Glückwunsch!"),
     ;
 
     private final String message;

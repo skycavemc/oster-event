@@ -4,13 +4,11 @@ import com.mongodb.client.model.Filters;
 import de.skycave.osterevent.OsterEvent;
 import de.skycave.osterevent.enums.Message;
 import de.skycave.osterevent.enums.PlayerMode;
-import de.skycave.osterevent.models.Reward;
+import de.skycave.osterevent.models.Gift;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -36,7 +34,7 @@ public class InventoryCloseListener implements Listener {
             main.getPlayerModes().remove(uuid);
             return;
         }
-        Reward reward = main.getRewardCache().get(uuid);
+        Gift reward = main.getRewardCache().get(uuid);
         if (reward == null) {
             return;
         }
@@ -48,6 +46,8 @@ public class InventoryCloseListener implements Listener {
         reward.setRewards(newRewards);
         main.getRewards().replaceOne(Filters.eq("_id", reward.getObjectId()), reward);
         Message.EDIT_SUCCESS.get().replace("%id", "" + reward.getSerialId()).send(player);
+        main.getPlayerModes().remove(uuid);
+        main.getRewardCache().remove(uuid);
     }
 
 }

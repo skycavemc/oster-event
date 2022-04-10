@@ -12,7 +12,7 @@ import de.skycave.osterevent.interfaces.PrefixHolder;
 import de.skycave.osterevent.listeners.InventoryCloseListener;
 import de.skycave.osterevent.listeners.PlayerInteractListener;
 import de.skycave.osterevent.models.AutoSaveConfig;
-import de.skycave.osterevent.models.Reward;
+import de.skycave.osterevent.models.Gift;
 import de.skycave.osterevent.models.User;
 import de.skycave.osterevent.utils.FileUtils;
 import org.bson.codecs.configuration.CodecRegistries;
@@ -30,10 +30,10 @@ import java.util.UUID;
 public final class OsterEvent extends JavaPlugin implements PrefixHolder {
 
     private MongoClient client;
-    private MongoCollection<Reward> rewards;
+    private MongoCollection<Gift> rewards;
     private MongoCollection<User> users;
     private final Map<UUID, PlayerMode> playerModes = new HashMap<>();
-    private final Map<UUID, Reward> rewardCache = new HashMap<>();
+    private final Map<UUID, Gift> rewardCache = new HashMap<>();
     private AutoSaveConfig configuration;
 
     @Override
@@ -41,13 +41,13 @@ public final class OsterEvent extends JavaPlugin implements PrefixHolder {
         // database
         CodecRegistry registry = CodecRegistries.fromRegistries(
                 CodecRegistries.fromCodecs(new ItemStackCodec(), new LocationCodec(), new UUIDCodec()),
-                CodecRegistries.fromProviders(new RewardCodecProvider(), new UserCodecProvider()),
+                CodecRegistries.fromProviders(new GiftCodecProvider(), new UserCodecProvider()),
                 MongoClientSettings.getDefaultCodecRegistry()
         );
         MongoClientSettings settings = MongoClientSettings.builder().codecRegistry(registry).build();
         client = MongoClients.create(settings);
         MongoDatabase db = client.getDatabase("oster_event");
-        rewards = db.getCollection("rewards", Reward.class);
+        rewards = db.getCollection("rewards", Gift.class);
         users = db.getCollection("users", User.class);
 
         // resources
@@ -64,6 +64,7 @@ public final class OsterEvent extends JavaPlugin implements PrefixHolder {
         pm.registerEvents(new PlayerInteractListener(this), this);
     }
 
+    @SuppressWarnings("SameParameterValue")
     private void registerCommand(String command, CommandExecutor executor) {
         PluginCommand cmd = getCommand(command);
         if (cmd == null) {
@@ -78,7 +79,7 @@ public final class OsterEvent extends JavaPlugin implements PrefixHolder {
         client.close();
     }
 
-    public MongoCollection<Reward> getRewards() {
+    public MongoCollection<Gift> getRewards() {
         return rewards;
     }
 
@@ -90,7 +91,7 @@ public final class OsterEvent extends JavaPlugin implements PrefixHolder {
         return playerModes;
     }
 
-    public Map<UUID, Reward> getRewardCache() {
+    public Map<UUID, Gift> getRewardCache() {
         return rewardCache;
     }
 
