@@ -29,7 +29,7 @@ public class GiftCodec implements Codec<Gift> {
     }
 
     @Override
-    public Gift decode(BsonReader reader, DecoderContext decoderContext) {
+    public Gift decode(@NotNull BsonReader reader, DecoderContext decoderContext) {
         Gift gift = new Gift();
         reader.readStartDocument();
         while (reader.readBsonType() != BsonType.END_OF_DOCUMENT) {

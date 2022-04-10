@@ -13,6 +13,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class PlayerUtils {
 
+    /**
+     * Initiates the edit mode for modifying the rewards of a gift.
+     * @param player The player to start the edit mode for
+     * @param gift The gift to modify
+     * @param main The main class
+     */
     public static void startEdit(@NotNull Player player, @NotNull Gift gift, @NotNull OsterEvent main) {
         main.getPlayerModes().put(player.getUniqueId(), PlayerMode.EDIT);
         Message.EDIT_START.get().send(player);

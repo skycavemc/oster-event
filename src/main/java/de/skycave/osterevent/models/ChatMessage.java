@@ -3,7 +3,6 @@ package de.skycave.osterevent.models;
 import de.skycave.osterevent.interfaces.PrefixHolder;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**

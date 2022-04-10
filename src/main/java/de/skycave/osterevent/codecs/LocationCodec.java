@@ -8,13 +8,14 @@ import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
 public class LocationCodec implements Codec<Location> {
 
     @Override
-    public Location decode(BsonReader reader, DecoderContext decoderContext) {
+    public Location decode(@NotNull BsonReader reader, DecoderContext decoderContext) {
         Location location = new Location(null, 0, 0, 0);
         reader.readStartDocument();
         while (reader.readBsonType() != BsonType.END_OF_DOCUMENT) {

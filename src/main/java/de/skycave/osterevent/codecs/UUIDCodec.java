@@ -5,13 +5,14 @@ import org.bson.BsonWriter;
 import org.bson.codecs.Codec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
 public class UUIDCodec implements Codec<UUID> {
 
     @Override
-    public UUID decode(BsonReader reader, DecoderContext decoderContext) {
+    public UUID decode(@NotNull BsonReader reader, DecoderContext decoderContext) {
         return UUID.fromString(reader.readString());
     }
 

@@ -7,10 +7,11 @@ import org.bson.codecs.Codec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemStackCodec implements Codec<ItemStack> {
     @Override
-    public ItemStack decode(BsonReader reader, DecoderContext decoderContext) {
+    public ItemStack decode(@NotNull BsonReader reader, DecoderContext decoderContext) {
         return ItemStack.deserializeBytes(reader.readBinaryData().getData());
     }
 

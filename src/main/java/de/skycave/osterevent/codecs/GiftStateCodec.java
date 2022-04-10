@@ -6,11 +6,12 @@ import org.bson.BsonWriter;
 import org.bson.codecs.Codec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
+import org.jetbrains.annotations.NotNull;
 
 public class GiftStateCodec implements Codec<GiftState> {
 
     @Override
-    public GiftState decode(BsonReader reader, DecoderContext decoderContext) {
+    public GiftState decode(@NotNull BsonReader reader, DecoderContext decoderContext) {
         return GiftState.valueOf(reader.readString());
     }
 

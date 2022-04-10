@@ -21,6 +21,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.HashMap;
@@ -99,8 +101,9 @@ public final class OsterEvent extends JavaPlugin implements PrefixHolder {
         return configuration;
     }
 
+    @Contract(pure = true)
     @Override
-    public String getPrefix() {
+    public @NotNull String getPrefix() {
         return "&a&lOstern &8»";
     }
 }
