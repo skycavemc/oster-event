@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,24 +25,20 @@ public class InventoryCloseListener implements Listener {
     }
 
     @EventHandler
-    public void on(InventoryCloseEvent event) {
+    public void on(@NotNull InventoryCloseEvent event) {
         Player player = (Player) event.getPlayer();
         UUID uuid = player.getUniqueId();
-        if (main.getPlayerModes().get(uuid) != PlayerMode.EDIT) {
-            return;
-        }
+        if (main.getPlayerModes().get(uuid) != PlayerMode.EDIT) return;
         if (!player.hasPermission("skycave.ostern")) {
             main.getPlayerModes().remove(uuid);
             return;
         }
         Gift gift = main.getGiftCache().get(uuid);
-        if (gift == null) {
-            return;
-        }
+        if (gift == null) return;
 
         List<ItemStack> newRewards = new ArrayList<>();
         for (ItemStack item : event.getInventory()) {
-            newRewards.add(item);
+            if (item != null) newRewards.add(item);
         }
         gift.setRewards(newRewards);
         main.getGifts().replaceOne(Filters.eq("_id", gift.getObjectId()), gift);

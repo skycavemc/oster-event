@@ -31,7 +31,7 @@ public class PlayerInteractListener implements Listener {
     }
 
     @EventHandler
-    public void on(PlayerInteractEvent event) {
+    public void on(@NotNull PlayerInteractEvent event) {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
         PlayerMode mode = main.getPlayerModes().get(uuid);
@@ -50,6 +50,7 @@ public class PlayerInteractListener implements Listener {
             switch (mode) {
                 case MOVE -> {
                     gift.setLocation(event.getClickedBlock().getLocation());
+                    main.getGifts().replaceOne(Filters.eq("_id", gift.getObjectId()), gift);
                     Message.MOVE_SUCCESS.get().replace("%id", "" + gift.getSerialId()).send(player);
                     main.getPlayerModes().remove(uuid);
                     main.getGiftCache().remove(uuid);
@@ -58,6 +59,7 @@ public class PlayerInteractListener implements Listener {
                 case CREATE -> {
                     gift.setLocation(event.getClickedBlock().getLocation());
                     main.getGifts().insertOne(gift);
+                    main.getConfiguration().set("current_id", gift.getSerialId());
                     Message.MOVE_SUCCESS.get().replace("%id", "" + gift.getSerialId()).send(player);
                     PlayerUtils.startEdit(player, gift, main);
                     return;
