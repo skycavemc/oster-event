@@ -13,12 +13,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class PlayerUtils {
 
-    public static void startEdit(@NotNull Player player, @NotNull Gift reward, @NotNull OsterEvent main) {
+    public static void startEdit(@NotNull Player player, @NotNull Gift gift, @NotNull OsterEvent main) {
         main.getPlayerModes().put(player.getUniqueId(), PlayerMode.EDIT);
         Message.EDIT_START.get().send(player);
         Inventory inv = Bukkit.createInventory(null, 9,
                 Component.text(Message.EDIT_TITLE.get().get(false)));
-        for (ItemStack item : reward.getRewards()) {
+        for (ItemStack item : gift.getRewards()) {
             inv.addItem(item);
         }
         player.openInventory(inv);

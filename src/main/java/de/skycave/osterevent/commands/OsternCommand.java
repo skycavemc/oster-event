@@ -44,16 +44,16 @@ public class OsternCommand implements CommandExecutor, TabCompleter {
                     Message.PLAYER_ONLY.get().send(sender);
                     return true;
                 }
-                Gift reward = new Gift();
-                reward.setSerialId(main.getConfiguration().getInt("current_id") + 1);
-                Message.CREATE_START.get().replace("%id", "" + reward.getSerialId()).send(player);
+                Gift gift = new Gift();
+                gift.setSerialId(main.getConfiguration().getInt("current_id") + 1);
+                Message.CREATE_START.get().replace("%id", "" + gift.getSerialId()).send(player);
                 if (args.length >= 2) {
-                    reward.setGiftState(GiftState.CLAIMABLE_ONCE);
+                    gift.setGiftState(GiftState.CLAIMABLE_ONCE);
                     Message.CREATE_ONLY_ONCE.get().send(player);
                 } else {
-                    reward.setGiftState(GiftState.CLAIMABLE);
+                    gift.setGiftState(GiftState.CLAIMABLE);
                 }
-                main.getRewardCache().put(player.getUniqueId(), reward);
+                main.getGiftCache().put(player.getUniqueId(), gift);
                 main.getPlayerModes().put(player.getUniqueId(), PlayerMode.CREATE);
             }
             case "edit" -> {
@@ -73,13 +73,13 @@ public class OsternCommand implements CommandExecutor, TabCompleter {
                     break;
                 }
                 Bson filter = Filters.eq("serial_id", id);
-                Gift reward = main.getRewards().find(filter).first();
-                if (reward == null) {
-                    Message.REWARD_NONEXISTENT.get().send(player);
+                Gift gift = main.getGifts().find(filter).first();
+                if (gift == null) {
+                    Message.GIFT_NONEXISTENT.get().send(player);
                     break;
                 }
-                main.getRewardCache().put(player.getUniqueId(), reward);
-                PlayerUtils.startEdit(player, reward, main);
+                main.getGiftCache().put(player.getUniqueId(), gift);
+                PlayerUtils.startEdit(player, gift, main);
             }
             case "move" -> {
                 if (!(sender instanceof Player player)) {
@@ -98,12 +98,12 @@ public class OsternCommand implements CommandExecutor, TabCompleter {
                     break;
                 }
                 Bson filter = Filters.eq("serial_id", id);
-                Gift reward = main.getRewards().find(filter).first();
-                if (reward == null) {
-                    Message.REWARD_NONEXISTENT.get().send(player);
+                Gift gift = main.getGifts().find(filter).first();
+                if (gift == null) {
+                    Message.GIFT_NONEXISTENT.get().send(player);
                     break;
                 }
-                main.getRewardCache().put(player.getUniqueId(), reward);
+                main.getGiftCache().put(player.getUniqueId(), gift);
                 main.getPlayerModes().put(player.getUniqueId(), PlayerMode.MOVE);
                 Message.MOVE_START.get().send(player);
             }
@@ -120,9 +120,9 @@ public class OsternCommand implements CommandExecutor, TabCompleter {
                     break;
                 }
                 Bson filter = Filters.eq("serial_id", id);
-                Gift reward = main.getRewards().findOneAndDelete(filter);
-                if (reward == null) {
-                    Message.REWARD_NONEXISTENT.get().send(sender);
+                Gift gift = main.getGifts().findOneAndDelete(filter);
+                if (gift == null) {
+                    Message.GIFT_NONEXISTENT.get().send(sender);
                     break;
                 }
                 Message.DELETE_SUCCESS.get().send(sender);
@@ -140,7 +140,7 @@ public class OsternCommand implements CommandExecutor, TabCompleter {
                     }
                 }
 
-                long entries = main.getRewards().countDocuments();
+                long entries = main.getGifts().countDocuments();
                 if (entries == 0) {
                     // TODO msg
                     break;
@@ -150,14 +150,14 @@ public class OsternCommand implements CommandExecutor, TabCompleter {
                 page = Math.min(page, pages);
                 int skip = (page - 1) * 10;
 
-                List<Gift> rewards = main.getRewards().find()
+                List<Gift> gifts = main.getGifts().find()
                         .sort(Sorts.ascending("serial_id"))
                         .skip(skip)
                         .limit(10)
                         .into(new ArrayList<>());
 
                 // TODO header
-                for (Gift reward : rewards) {
+                for (Gift gift : gifts) {
                     // TODO msg
                 }
                 // TODO footer
@@ -175,9 +175,9 @@ public class OsternCommand implements CommandExecutor, TabCompleter {
                     break;
                 }
                 Bson filter = Filters.eq("serial_id", id);
-                Gift reward = main.getRewards().find(filter).first();
-                if (reward == null) {
-                    Message.REWARD_NONEXISTENT.get().send(sender);
+                Gift gift = main.getGifts().find(filter).first();
+                if (gift == null) {
+                    Message.GIFT_NONEXISTENT.get().send(sender);
                     break;
                 }
                 // TODO msg

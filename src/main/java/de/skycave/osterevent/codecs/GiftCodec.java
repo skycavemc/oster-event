@@ -30,27 +30,27 @@ public class GiftCodec implements Codec<Gift> {
 
     @Override
     public Gift decode(BsonReader reader, DecoderContext decoderContext) {
-        Gift reward = new Gift();
+        Gift gift = new Gift();
         reader.readStartDocument();
         while (reader.readBsonType() != BsonType.END_OF_DOCUMENT) {
             switch (reader.readName()) {
-                case "_id" -> reward.setObjectId(reader.readObjectId());
-                case "serial_id" -> reward.setSerialId(reader.readInt32());
-                case "location" -> reward.setLocation(locationCodec.decode(reader, decoderContext));
+                case "_id" -> gift.setObjectId(reader.readObjectId());
+                case "serial_id" -> gift.setSerialId(reader.readInt32());
+                case "location" -> gift.setLocation(locationCodec.decode(reader, decoderContext));
                 case "rewards" -> {
                     reader.readStartArray();
                     List<ItemStack> rewards = new ArrayList<>();
                     while (reader.readBsonType() == BsonType.BINARY) {
                         rewards.add(itemStackCodec.decode(reader, decoderContext));
                     }
-                    reward.setRewards(rewards);
+                    gift.setRewards(rewards);
                     reader.readEndArray();
                 }
-                case "only_once" -> reward.setGiftState(giftStateCodec.decode(reader, decoderContext));
+                case "only_once" -> gift.setGiftState(giftStateCodec.decode(reader, decoderContext));
                 default -> reader.skipValue();
             }
         }
-        return reward;
+        return gift;
     }
 
     @Override

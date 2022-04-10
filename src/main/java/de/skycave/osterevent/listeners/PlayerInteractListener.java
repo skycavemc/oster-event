@@ -44,29 +44,30 @@ public class PlayerInteractListener implements Listener {
                 main.getPlayerModes().remove(uuid);
                 return;
             }
-            Gift reward = main.getRewardCache().get(uuid);
-            if (reward == null) return;
+            Gift gift = main.getGiftCache().get(uuid);
+            if (gift == null) return;
 
             switch (mode) {
                 case MOVE -> {
-                    reward.setLocation(event.getClickedBlock().getLocation());
-                    Message.MOVE_SUCCESS.get().replace("%id", "" + reward.getSerialId()).send(player);
+                    gift.setLocation(event.getClickedBlock().getLocation());
+                    Message.MOVE_SUCCESS.get().replace("%id", "" + gift.getSerialId()).send(player);
                     main.getPlayerModes().remove(uuid);
-                    main.getRewardCache().remove(uuid);
+                    main.getGiftCache().remove(uuid);
                     return;
                 }
                 case CREATE -> {
-                    reward.setLocation(event.getClickedBlock().getLocation());
-                    Message.MOVE_SUCCESS.get().replace("%id", "" + reward.getSerialId()).send(player);
-                    PlayerUtils.startEdit(player, reward, main);
+                    gift.setLocation(event.getClickedBlock().getLocation());
+                    main.getGifts().insertOne(gift);
+                    Message.MOVE_SUCCESS.get().replace("%id", "" + gift.getSerialId()).send(player);
+                    PlayerUtils.startEdit(player, gift, main);
                     return;
                 }
             }
         }
 
-        Bson rewardFilter = Filters.eq("location", block.getLocation());
-        Gift reward = main.getRewards().find(rewardFilter).first();
-        if (reward == null) return;
+        Bson giftFilter = Filters.eq("location", block.getLocation());
+        Gift gift = main.getGifts().find(giftFilter).first();
+        if (gift == null) return;
         Bson filter = Filters.eq("uuid", uuid);
         User user = main.getUsers().find(filter).first();
         if (user == null) {
@@ -75,37 +76,37 @@ public class PlayerInteractListener implements Listener {
             user.setClaimedRewards(new ArrayList<>());
         }
 
-        switch (reward.getGiftState()) {
+        switch (gift.getGiftState()) {
             case CLAIMED -> {
-                if (user.getClaimedRewards().contains(reward.getSerialId())) {
+                if (user.getClaimedRewards().contains(gift.getSerialId())) {
                     Message.CLAIM_ALREADY.get().send(player);
                     break;
                 }
                 Message.CLAIM_ALREADY_ONCE.get().send(player);
             }
             case CLAIMABLE -> {
-                if (user.getClaimedRewards().contains(reward.getSerialId())) {
+                if (user.getClaimedRewards().contains(gift.getSerialId())) {
                     Message.CLAIM_ALREADY.get().send(player);
                     break;
                 }
                 // TODO check if player has space
-                claimRewards(player, reward, filter, user);
+                claimRewards(player, gift, filter, user);
             }
             case CLAIMABLE_ONCE -> {
                 // TODO check if player has space
-                reward.setGiftState(GiftState.CLAIMED);
-                main.getRewards().replaceOne(rewardFilter, reward);
-                claimRewards(player, reward, filter, user);
+                gift.setGiftState(GiftState.CLAIMED);
+                main.getGifts().replaceOne(giftFilter, gift);
+                claimRewards(player, gift, filter, user);
                 Message.CLAIM_ONCE.get().send(player);
             }
         }
     }
 
-    private void claimRewards(Player player, @NotNull Gift reward, Bson filter, @NotNull User user) {
-        user.getClaimedRewards().add(reward.getSerialId());
+    private void claimRewards(Player player, @NotNull Gift gift, Bson filter, @NotNull User user) {
+        user.getClaimedRewards().add(gift.getSerialId());
         main.getUsers().replaceOne(filter, user);
         StringJoiner sj = new StringJoiner("&7, &e");
-        for (ItemStack item : reward.getRewards()) {
+        for (ItemStack item : gift.getRewards()) {
             player.getInventory().addItem(item);
             //noinspection deprecation
             sj.add(item.getAmount() + "x " + item.getItemMeta().getDisplayName());

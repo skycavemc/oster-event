@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 public enum Message {
 
     PLAYER_ONLY("&cDieser Befehl ist nur als Spieler ausführbar."),
-    REWARD_NONEXISTENT("&cEin Geschenk mit dieser Nummer existiert nicht."),
+    GIFT_NONEXISTENT("&cEin Geschenk mit dieser Nummer existiert nicht."),
     INVALID_NUMBER("&cBitte gib eine gültige Zahl an."),
 
     // help

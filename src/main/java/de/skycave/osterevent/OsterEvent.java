@@ -30,10 +30,10 @@ import java.util.UUID;
 public final class OsterEvent extends JavaPlugin implements PrefixHolder {
 
     private MongoClient client;
-    private MongoCollection<Gift> rewards;
+    private MongoCollection<Gift> gifts;
     private MongoCollection<User> users;
     private final Map<UUID, PlayerMode> playerModes = new HashMap<>();
-    private final Map<UUID, Gift> rewardCache = new HashMap<>();
+    private final Map<UUID, Gift> giftCache = new HashMap<>();
     private AutoSaveConfig configuration;
 
     @Override
@@ -47,7 +47,7 @@ public final class OsterEvent extends JavaPlugin implements PrefixHolder {
         MongoClientSettings settings = MongoClientSettings.builder().codecRegistry(registry).build();
         client = MongoClients.create(settings);
         MongoDatabase db = client.getDatabase("oster_event");
-        rewards = db.getCollection("rewards", Gift.class);
+        gifts = db.getCollection("gifts", Gift.class);
         users = db.getCollection("users", User.class);
 
         // resources
@@ -79,8 +79,8 @@ public final class OsterEvent extends JavaPlugin implements PrefixHolder {
         client.close();
     }
 
-    public MongoCollection<Gift> getRewards() {
-        return rewards;
+    public MongoCollection<Gift> getGifts() {
+        return gifts;
     }
 
     public MongoCollection<User> getUsers() {
@@ -91,8 +91,8 @@ public final class OsterEvent extends JavaPlugin implements PrefixHolder {
         return playerModes;
     }
 
-    public Map<UUID, Gift> getRewardCache() {
-        return rewardCache;
+    public Map<UUID, Gift> getGiftCache() {
+        return giftCache;
     }
 
     public AutoSaveConfig getConfiguration() {

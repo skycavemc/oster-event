@@ -34,8 +34,8 @@ public class InventoryCloseListener implements Listener {
             main.getPlayerModes().remove(uuid);
             return;
         }
-        Gift reward = main.getRewardCache().get(uuid);
-        if (reward == null) {
+        Gift gift = main.getGiftCache().get(uuid);
+        if (gift == null) {
             return;
         }
 
@@ -43,11 +43,11 @@ public class InventoryCloseListener implements Listener {
         for (ItemStack item : event.getInventory()) {
             newRewards.add(item);
         }
-        reward.setRewards(newRewards);
-        main.getRewards().replaceOne(Filters.eq("_id", reward.getObjectId()), reward);
-        Message.EDIT_SUCCESS.get().replace("%id", "" + reward.getSerialId()).send(player);
+        gift.setRewards(newRewards);
+        main.getGifts().replaceOne(Filters.eq("_id", gift.getObjectId()), gift);
+        Message.EDIT_SUCCESS.get().replace("%id", "" + gift.getSerialId()).send(player);
         main.getPlayerModes().remove(uuid);
-        main.getRewardCache().remove(uuid);
+        main.getGiftCache().remove(uuid);
     }
 
 }
