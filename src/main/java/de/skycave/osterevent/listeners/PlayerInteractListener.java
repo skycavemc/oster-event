@@ -7,7 +7,7 @@ import de.skycave.osterevent.enums.Message;
 import de.skycave.osterevent.enums.PlayerMode;
 import de.skycave.osterevent.models.Gift;
 import de.skycave.osterevent.models.User;
-import de.skycave.osterevent.utils.PlayerUtils;
+import de.skycave.osterevent.utils.Utils;
 import org.bson.conversions.Bson;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -61,7 +62,7 @@ public class PlayerInteractListener implements Listener {
                     main.getGifts().insertOne(gift);
                     main.getConfiguration().set("current_id", gift.getSerialId());
                     Message.MOVE_SUCCESS.get().replace("%id", "" + gift.getSerialId()).send(player);
-                    PlayerUtils.startEdit(player, gift, main);
+                    Utils.startEdit(player, gift, main);
                     return;
                 }
             }
@@ -91,11 +92,19 @@ public class PlayerInteractListener implements Listener {
                     Message.CLAIM_ALREADY.get().send(player);
                     break;
                 }
-                // TODO check if player has space
+                int rewardAmount = gift.getRewards().size();
+                if (!hasSpace(player.getInventory(), rewardAmount)) {
+                    Message.CLAIM_NO_SPACE.get().replace("%amount", "" + rewardAmount);
+                    break;
+                }
                 claimRewards(player, gift, filter, user);
             }
             case CLAIMABLE_ONCE -> {
-                // TODO check if player has space
+                int rewardAmount = gift.getRewards().size();
+                if (!hasSpace(player.getInventory(), rewardAmount)) {
+                    Message.CLAIM_NO_SPACE.get().replace("%amount", "" + rewardAmount);
+                    break;
+                }
                 gift.setGiftState(GiftState.CLAIMED);
                 main.getGifts().replaceOne(giftFilter, gift);
                 claimRewards(player, gift, filter, user);
@@ -104,16 +113,27 @@ public class PlayerInteractListener implements Listener {
         }
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    private boolean hasSpace(@NotNull Inventory inv, int required) {
+        int free = 0;
+        for (int i = 0; i < 36; i++) {
+            if (inv.getItem(i) == null) {
+                free++;
+            }
+        }
+        return free >= required;
+    }
+
     private void claimRewards(Player player, @NotNull Gift gift, Bson filter, @NotNull User user) {
         user.getClaimedRewards().add(gift.getSerialId());
         main.getUsers().replaceOne(filter, user);
-        StringJoiner sj = new StringJoiner("&7, &e");
         for (ItemStack item : gift.getRewards()) {
             player.getInventory().addItem(item);
-            //noinspection deprecation
-            sj.add(item.getAmount() + "x " + item.getItemMeta().getDisplayName());
         }
-        Message.CLAIM.get().replace("%rewards", sj.toString()).send(player);
+        Message.CLAIM.get().replace("%rewards",
+                Utils.itemStacksAsString(gift.getRewards(), "&7, &e")
+        ).send(player);
+        // TODO add sound effects
     }
 
 }

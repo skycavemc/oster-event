@@ -44,6 +44,17 @@ public enum Message {
     // info
     INFO_SYNTAX("&e/ostern info <Nummer>"),
 
+    // list
+    LIST_HEADER_FOOTER("&8>&7------------&8[ &a%page&2/&a%amount &8]&7------------&8<"),
+    LIST_ENTRY("&6&l%id &8- &a%rewards &8(&7Koordinaten: &e%location&8)"),
+    LIST_NO_ENTRIES("&cEs sind keine Einträge vorhanden."),
+
+    // info
+    INFO_HEADER("&2Info für Geschenk Nummer %id"),
+    INFO_LOCATION("&aPosition: &7%location"),
+    INFO_REWARDS("&aBelohnungen: &7rewards"),
+    INFO_STATE("&aNur von einem Spieler abholbar: &7%yesno"),
+
     // cancel
     CANCEL("&cAktion wurde abgebrochen."),
     CANCEL_NONE("&cDu hast keine Aktion, die du abbrechen kannst."),
@@ -53,6 +64,7 @@ public enum Message {
     CLAIM_ALREADY("&cDu hast dieses Geschenk bereits gefunden."),
     CLAIM("&aDu hast ein Geschenk gefunden! Du erhältst folgende Belohnungen: &e%rewards"),
     CLAIM_ONCE("&6Dieses Geschenk war nur von einem einzigen Spieler einlösbar! Herzlichen Glückwunsch!"),
+    CLAIM_NO_SPACE("&cDu hast nicht genug Platz, um die Belohnungen abzuholen. Du brauchst %amount freie Slots.")
     ;
 
     private final String message;

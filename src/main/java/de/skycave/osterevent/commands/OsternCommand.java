@@ -7,7 +7,7 @@ import de.skycave.osterevent.enums.GiftState;
 import de.skycave.osterevent.enums.Message;
 import de.skycave.osterevent.enums.PlayerMode;
 import de.skycave.osterevent.models.Gift;
-import de.skycave.osterevent.utils.PlayerUtils;
+import de.skycave.osterevent.utils.Utils;
 import org.bson.conversions.Bson;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -79,7 +79,7 @@ public class OsternCommand implements CommandExecutor, TabCompleter {
                     break;
                 }
                 main.getGiftCache().put(player.getUniqueId(), gift);
-                PlayerUtils.startEdit(player, gift, main);
+                Utils.startEdit(player, gift, main);
             }
             case "move" -> {
                 if (!(sender instanceof Player player)) {
@@ -142,7 +142,7 @@ public class OsternCommand implements CommandExecutor, TabCompleter {
 
                 long entries = main.getGifts().countDocuments();
                 if (entries == 0) {
-                    // TODO msg
+                    Message.LIST_NO_ENTRIES.get().send(sender);
                     break;
                 }
 
@@ -156,11 +156,15 @@ public class OsternCommand implements CommandExecutor, TabCompleter {
                         .limit(10)
                         .into(new ArrayList<>());
 
-                // TODO header
+                Message.LIST_HEADER_FOOTER.get().replace("%page", "" + page).send(sender);
                 for (Gift gift : gifts) {
-                    // TODO msg
+                    Message.LIST_ENTRY.get()
+                            .replace("%id", "" + gift.getSerialId())
+                            .replace("%rewards", Utils.itemStacksAsString(gift.getRewards(), "&7, &a"))
+                            .replace("%location", Utils.locationAsString(gift.getLocation()))
+                            .send(sender);
                 }
-                // TODO footer
+                Message.LIST_HEADER_FOOTER.get().replace("%page", "" + page).send(sender);
             }
             case "info" -> {
                 if (args.length < 2) {
@@ -180,7 +184,13 @@ public class OsternCommand implements CommandExecutor, TabCompleter {
                     Message.GIFT_NONEXISTENT.get().send(sender);
                     break;
                 }
-                // TODO msg
+                Message.INFO_HEADER.get().replace("%id", "" + gift.getSerialId()).send(sender);
+                Message.INFO_LOCATION.get().replace("%location",
+                        Utils.locationAsString(gift.getLocation())).send(sender);
+                Message.INFO_REWARDS.get().replace("%rewards",
+                        Utils.itemStacksAsString(gift.getRewards(), ", ")).send(sender);
+                Message.INFO_STATE.get().replace("%yesno",
+                        gift.getGiftState() == GiftState.CLAIMABLE ? "Nein" : "Ja").send(sender);
             }
             case "cancel" -> {
                 if (!(sender instanceof Player player)) {

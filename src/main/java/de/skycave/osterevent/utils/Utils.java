@@ -6,12 +6,17 @@ import de.skycave.osterevent.enums.PlayerMode;
 import de.skycave.osterevent.models.Gift;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class PlayerUtils {
+import java.text.DecimalFormat;
+import java.util.List;
+import java.util.StringJoiner;
+
+public class Utils {
 
     /**
      * Initiates the edit mode for modifying the rewards of a gift.
@@ -28,6 +33,27 @@ public class PlayerUtils {
             inv.addItem(item);
         }
         player.openInventory(inv);
+    }
+
+    /**
+     * Transforms a location into a string containing the x, y and z components of the location.
+     * @param location The location to transform
+     * @return The result
+     */
+    public static @NotNull String locationAsString(@NotNull Location location) {
+        DecimalFormat decimalFormat = new DecimalFormat("#.##");
+        return decimalFormat.format(location.getX()) + ", " +
+                decimalFormat.format(location.getY()) + ", " +
+                decimalFormat.format(location.getZ());
+    }
+
+    public static @NotNull String itemStacksAsString(@NotNull List<ItemStack> itemStacks, String delimiter) {
+        StringJoiner sj = new StringJoiner(delimiter);
+        for (ItemStack item : itemStacks) {
+            //noinspection deprecation
+            sj.add(item.getAmount() + "x " + item.getItemMeta().getDisplayName());
+        }
+        return sj.toString();
     }
 
 }
