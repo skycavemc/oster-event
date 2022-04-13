@@ -9,6 +9,7 @@ import de.skycave.osterevent.codecs.*;
 import de.skycave.osterevent.commands.OsternCommand;
 import de.skycave.osterevent.enums.PlayerMode;
 import de.skycave.osterevent.interfaces.PrefixHolder;
+import de.skycave.osterevent.listeners.BlockBreakListener;
 import de.skycave.osterevent.listeners.InventoryCloseListener;
 import de.skycave.osterevent.listeners.PlayerInteractListener;
 import de.skycave.osterevent.models.AutoSaveConfig;
@@ -68,6 +69,7 @@ public final class OsterEvent extends JavaPlugin implements PrefixHolder {
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new InventoryCloseListener(this), this);
         pm.registerEvents(new PlayerInteractListener(this), this);
+        pm.registerEvents(new BlockBreakListener(this), this);
     }
 
     @SuppressWarnings("SameParameterValue")

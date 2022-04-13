@@ -71,6 +71,11 @@ public class PlayerInteractListener implements Listener {
             }
         }
 
+        if (event.getAction().isLeftClick() && player.hasPermission("skycave.ostern")) {
+            event.setCancelled(false);
+            return;
+        }
+
         Bson giftFilter = Filters.eq("location", block.getLocation());
         Gift gift = main.getGifts().find(giftFilter).first();
         if (gift == null) return;

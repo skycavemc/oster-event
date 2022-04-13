@@ -40,6 +40,7 @@ public enum Message {
     // delete
     DELETE_SYNTAX("&e/ostern delete <Nummer>"),
     DELETE_SUCCESS("&aDas Geschenk mit der Nummer &2%id &awurde erfolgreich entfernt."),
+    DELETE_SNEAK("&cSneaken + Abbauen, um das Geschenk zu entfernen."),
 
     // info
     INFO_SYNTAX("&e/ostern info <Nummer>"),
