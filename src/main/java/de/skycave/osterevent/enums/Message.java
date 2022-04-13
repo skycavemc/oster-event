@@ -20,6 +20,7 @@ public enum Message {
     HELP_LIST("&a/ostern list &8- &7Listet alle Geschenke auf"),
     HELP_INFO("&a/ostern info <Nummer> &8- &7Zeigt Informationen über ein Geschenk an"),
     HELP_CANCEL("&a/ostern cancel &8- &7Bricht die aktuelle Aktion ab"),
+    HELP_RESET("&a/ostern reset &8- &7Setzt ALLE Userdaten zurück"),
     HELP_HELP("&a/ostern help &8- &7Zeigt Hilfe an"),
 
     // create
@@ -59,6 +60,9 @@ public enum Message {
     // cancel
     CANCEL("&cAktion wurde abgebrochen."),
     CANCEL_NONE("&cDu hast keine Aktion, die du abbrechen kannst."),
+
+    // reset
+    RESET_DONE("&eALLE Userdaten wurden zurückgesetzt."),
 
     // claim
     CLAIM_ALREADY_ONCE("&cDieses Geschenk ist nur von einem Spieler einlösbar und wurde bereits gefunden."),

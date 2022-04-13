@@ -13,6 +13,7 @@ import org.bukkit.Color;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,6 +23,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -63,7 +65,8 @@ public class PlayerInteractListener implements Listener {
                 case CREATE -> {
                     gift.setLocation(event.getClickedBlock().getLocation());
                     main.getGifts().insertOne(gift);
-                    main.getConfiguration().set("current_id", gift.getSerialId());
+                    main.getConfig().set("current_id", gift.getSerialId());
+                    main.saveConfig();
                     Message.MOVE_SUCCESS.get().replace("%id", "" + gift.getSerialId()).send(player);
                     Utils.startEdit(player, gift, main);
                     return;
@@ -75,6 +78,29 @@ public class PlayerInteractListener implements Listener {
             event.setCancelled(false);
             return;
         }
+
+        LocalDateTime now = LocalDateTime.now();
+        ConfigurationSection startDate = main.getConfig().getConfigurationSection("start_date");
+        ConfigurationSection endDate = main.getConfig().getConfigurationSection("end_date");
+        if (startDate == null || endDate == null) {
+            main.getLogger().severe("Start or end date undefined. Please check the config.yml.");
+            return;
+        }
+        LocalDateTime start = LocalDateTime.of(now.getYear(),
+                startDate.getInt("month"), startDate.getInt("day"),
+                startDate.getInt("hour"), startDate.getInt("minute"));
+        LocalDateTime end = LocalDateTime.of(now.getYear(),
+                endDate.getInt("month"), endDate.getInt("day"),
+                endDate.getInt("hour"), endDate.getInt("minute"));
+        if (end.isBefore(start)) {
+            main.getLogger().severe("End date must be before start date. Please check the config.yml.");
+            return;
+        }
+        //if (!player.hasPermission("skycave.ostern")) {
+            if (now.isBefore(start) || now.isAfter(end)) {
+                return;
+            }
+        //}
 
         Bson giftFilter = Filters.eq("location", block.getLocation());
         Gift gift = main.getGifts().find(giftFilter).first();

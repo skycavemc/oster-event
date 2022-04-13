@@ -1,6 +1,5 @@
 package de.skycave.osterevent.models;
 
-import de.skycave.osterevent.interfaces.PrefixHolder;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("unused")
 public class ChatMessage {
 
-    private final PrefixHolder prefixHolder;
+    private final SkyCavePlugin prefixHolder;
     private String base;
 
     /**
@@ -19,7 +18,7 @@ public class ChatMessage {
      * @param prefixHolder A class that holds a prefix
      * @param base The raw string to save
      */
-    public ChatMessage(PrefixHolder prefixHolder, String base) {
+    public ChatMessage(SkyCavePlugin prefixHolder, String base) {
         this.prefixHolder = prefixHolder;
         this.base = base;
     }

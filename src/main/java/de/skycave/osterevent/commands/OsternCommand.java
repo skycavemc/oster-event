@@ -46,7 +46,7 @@ public class OsternCommand implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 Gift gift = new Gift();
-                gift.setSerialId(main.getConfiguration().getInt("current_id") + 1);
+                gift.setSerialId(main.getConfig().getInt("current_id") + 1);
                 Message.CREATE_START.get().replace("%id", "" + gift.getSerialId()).send(player);
                 if (args.length >= 2) {
                     gift.setGiftState(GiftState.CLAIMABLE_ONCE);
@@ -213,6 +213,10 @@ public class OsternCommand implements CommandExecutor, TabCompleter {
                     Message.CANCEL_NONE.get().send(player);
                 }
             }
+            case "reset" -> {
+                main.getUsers().drop();
+                Message.RESET_DONE.get().send(sender);
+            }
             case "help" -> sendHelp(sender);
         }
         return true;
@@ -226,6 +230,7 @@ public class OsternCommand implements CommandExecutor, TabCompleter {
         Message.HELP_LIST.get().send(sender, false);
         Message.HELP_INFO.get().send(sender, false);
         Message.HELP_CANCEL.get().send(sender, false);
+        Message.HELP_RESET.get().send(sender, false);
         Message.HELP_HELP.get().send(sender, false);
     }
 
@@ -243,6 +248,7 @@ public class OsternCommand implements CommandExecutor, TabCompleter {
             arguments.add("list");
             arguments.add("info");
             arguments.add("cancel");
+            arguments.add("reset");
             arguments.add("help");
             StringUtil.copyPartialMatches(args[0], arguments, completions);
         } else if (args.length == 2) {
