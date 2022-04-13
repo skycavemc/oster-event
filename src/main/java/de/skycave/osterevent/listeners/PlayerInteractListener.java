@@ -9,6 +9,7 @@ import de.skycave.osterevent.models.Gift;
 import de.skycave.osterevent.models.User;
 import de.skycave.osterevent.utils.Utils;
 import org.bson.conversions.Bson;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -133,7 +134,7 @@ public class PlayerInteractListener implements Listener {
         Message.CLAIM.get().replace("%rewards",
                 Utils.itemStacksAsString(gift.getRewards(), "&7, &e")
         ).send(player);
-        // TODO add sound effects
+        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.2f);
     }
 
 }

@@ -9,6 +9,7 @@ import de.skycave.osterevent.enums.PlayerMode;
 import de.skycave.osterevent.models.Gift;
 import de.skycave.osterevent.utils.Utils;
 import org.bson.conversions.Bson;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -200,6 +201,7 @@ public class OsternCommand implements CommandExecutor, TabCompleter {
                 if (main.getPlayerModes().containsKey(player.getUniqueId())) {
                     main.getPlayerModes().remove(player.getUniqueId());
                     Message.CANCEL.get().send(player);
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, .8f);
                 } else {
                     Message.CANCEL_NONE.get().send(player);
                 }
