@@ -5,6 +5,7 @@ import de.skycave.osterevent.enums.Message;
 import de.skycave.osterevent.enums.PlayerMode;
 import de.skycave.osterevent.models.Gift;
 import net.kyori.adventure.text.Component;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -50,8 +51,20 @@ public class Utils {
     public static @NotNull String itemStacksAsString(@NotNull List<ItemStack> itemStacks, String delimiter) {
         StringJoiner sj = new StringJoiner(delimiter);
         for (ItemStack item : itemStacks) {
-            //noinspection deprecation
-            sj.add(item.getAmount() + "x " + item.getItemMeta().getDisplayName());
+            sj.add(item.getAmount() + "x " + enumObjectAsString(item.getType()));
+        }
+        return sj.toString();
+    }
+
+    /**
+     * Transforms an enum name into a friendly name.
+     * @param object The enum object
+     * @return The result
+     */
+    public static String enumObjectAsString(@NotNull Enum<?> object) {
+        StringJoiner sj = new StringJoiner(" ");
+        for (String part : object.toString().split("_")) {
+            sj.add(StringUtils.capitalize(part.toLowerCase()));
         }
         return sj.toString();
     }

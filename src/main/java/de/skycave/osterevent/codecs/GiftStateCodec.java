@@ -18,7 +18,7 @@ public class GiftStateCodec implements Codec<GiftState> {
     @Override
     public void encode(BsonWriter writer, GiftState value, EncoderContext encoderContext) {
         if (value != null) {
-            writer.writeName(value.toString());
+            writer.writeString(value.toString());
         }
     }
 

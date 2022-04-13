@@ -46,10 +46,11 @@ public class GiftCodec implements Codec<Gift> {
                     gift.setRewards(rewards);
                     reader.readEndArray();
                 }
-                case "only_once" -> gift.setGiftState(giftStateCodec.decode(reader, decoderContext));
+                case "gift_state" -> gift.setGiftState(giftStateCodec.decode(reader, decoderContext));
                 default -> reader.skipValue();
             }
         }
+        reader.readEndDocument();
         return gift;
     }
 

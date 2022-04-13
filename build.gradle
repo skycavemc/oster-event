@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'de.skycave'
-version = '1.0.0'
+version = '1.0.1'
 
 repositories {
     mavenCentral()
@@ -23,6 +23,8 @@ dependencies {
 }
 
 def targetJavaVersion = 17
+def encoding = 'UTF-8'
+
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
@@ -34,8 +36,11 @@ java {
 
 tasks.withType(JavaCompile).configureEach {
     if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-        options.release = targetJavaVersion
+        options.release.set(targetJavaVersion)
     }
+    compileJava.options.encoding = encoding
+    compileTestJava.options.encoding = encoding
+    javadoc.options.encoding = encoding
 }
 
 processResources {

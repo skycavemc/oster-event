@@ -53,6 +53,10 @@ public final class OsterEvent extends JavaPlugin implements PrefixHolder {
         users = db.getCollection("users", User.class);
 
         // resources
+        if (!getDataFolder().isDirectory()) {
+            //noinspection ResultOfMethodCallIgnored
+            getDataFolder().mkdirs();
+        }
         if (FileUtils.copyResource(this, "config.yml")) {
             configuration = new AutoSaveConfig(new File(getDataFolder(), "config.yml"));
         }
@@ -104,6 +108,6 @@ public final class OsterEvent extends JavaPlugin implements PrefixHolder {
     @Contract(pure = true)
     @Override
     public @NotNull String getPrefix() {
-        return "&a&lOstern &8»";
+        return "&2&lOstern &8» ";
     }
 }

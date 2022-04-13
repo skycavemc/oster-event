@@ -16,25 +16,25 @@ public enum Message {
     HELP_CREATE("&a/ostern create <Einmalig> &8- &7Beginnt mit der Erstellung eines Geschenkes"),
     HELP_EDIT("&a/ostern edit <Nummer> &8- &7Editiert die Belohnungen eines Geschenkes"),
     HELP_MOVE("&a/ostern move <Nummer> &8- &7Ändert die Position eines Geschenkes"),
-    HELP_DELETE("&a/ostern delete <Nummer> &8- &7Entfernt ein Geschenk"),
+    HELP_DELETE("&a/ostern delete <Nummer> &8- &7Entfernt ein Geschenk (Alternativ: SHIFT + Abbauen)"),
     HELP_LIST("&a/ostern list &8- &7Listet alle Geschenke auf"),
     HELP_INFO("&a/ostern info <Nummer> &8- &7Zeigt Informationen über ein Geschenk an"),
     HELP_CANCEL("&a/ostern cancel &8- &7Bricht die aktuelle Aktion ab"),
     HELP_HELP("&a/ostern help &8- &7Zeigt Hilfe an"),
 
     // create
-    CREATE_START("&aErstellung eines neuen Geschenkes mit der Nummer &2%id &agestartet. Klicke auf einen Block, um die Position zu setzen."),
+    CREATE_START("&aErstellung eines neuen Geschenkes mit der Nummer &2%id &agestartet. &7Klicke auf einen Block, um die Position zu setzen."),
     CREATE_ONLY_ONCE("&eDas Geschenk wird nur von einem Spieler einlösbar sein."),
 
     // edit
     EDIT_SYNTAX("&e/ostern edit <Nummer>"),
-    EDIT_START("&aLege die Belohnungen in das geöffnete Inventar hinein."),
+    EDIT_START("&7Lege die Belohnungen in das geöffnete Inventar hinein."),
     EDIT_TITLE("&2Belohnungen hier ablegen"),
     EDIT_SUCCESS("&aBelohnungen für Geschenk Nummer &2%id &aerfolgreich angepasst."),
 
     // move
     MOVE_SYNTAX("&e/ostern move <Nummer>"),
-    MOVE_START("&aKlicke auf einen Block, um die Position zu setzen."),
+    MOVE_START("&7Klicke auf einen Block, um die Position zu setzen."),
     MOVE_SUCCESS("&aPosition für Geschenk Nummer &2%id &awurde erfolgreich angepasst."),
 
     // delete
@@ -52,7 +52,7 @@ public enum Message {
     // info
     INFO_HEADER("&2Info für Geschenk Nummer %id"),
     INFO_LOCATION("&aPosition: &7%location"),
-    INFO_REWARDS("&aBelohnungen: &7rewards"),
+    INFO_REWARDS("&aBelohnungen: &7%rewards"),
     INFO_STATE("&aNur von einem Spieler abholbar: &7%yesno"),
 
     // cancel
@@ -62,7 +62,7 @@ public enum Message {
     // claim
     CLAIM_ALREADY_ONCE("&cDieses Geschenk ist nur von einem Spieler einlösbar und wurde bereits gefunden."),
     CLAIM_ALREADY("&cDu hast dieses Geschenk bereits gefunden."),
-    CLAIM("&aDu hast ein Geschenk gefunden! Du erhältst folgende Belohnungen: &e%rewards"),
+    CLAIM("&aDu hast ein Geschenk gefunden! &7Du erhältst folgende Belohnungen: &e%rewards"),
     CLAIM_ONCE("&6Dieses Geschenk war nur von einem einzigen Spieler einlösbar! Herzlichen Glückwunsch!"),
     CLAIM_NO_SPACE("&cDu hast nicht genug Platz, um die Belohnungen abzuholen. Du brauchst %amount freie Slots.")
     ;

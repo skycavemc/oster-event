@@ -42,12 +42,23 @@ public class UserCodec implements Codec<User> {
                 default -> reader.skipValue();
             }
         }
+        reader.readEndDocument();
         return user;
     }
 
     @Override
     public void encode(BsonWriter writer, User value, EncoderContext encoderContext) {
-
+        if (value != null) {
+            writer.writeStartDocument();
+            writer.writeName("uuid");
+            uuidCodec.encode(writer, value.getUuid(), encoderContext);
+            writer.writeStartArray("claimed_rewards");
+            for (int id : value.getClaimedRewards()) {
+                writer.writeInt32(id);
+            }
+            writer.writeEndArray();
+            writer.writeEndDocument();
+        }
     }
 
     @Override

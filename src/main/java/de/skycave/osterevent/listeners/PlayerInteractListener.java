@@ -9,6 +9,8 @@ import de.skycave.osterevent.models.Gift;
 import de.skycave.osterevent.models.User;
 import de.skycave.osterevent.utils.Utils;
 import org.bson.conversions.Bson;
+import org.bukkit.Color;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -21,7 +23,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.StringJoiner;
 import java.util.UUID;
 
 public class PlayerInteractListener implements Listener {
@@ -48,6 +49,7 @@ public class PlayerInteractListener implements Listener {
             }
             Gift gift = main.getGiftCache().get(uuid);
             if (gift == null) return;
+            event.setCancelled(true);
 
             switch (mode) {
                 case MOVE -> {
@@ -72,18 +74,21 @@ public class PlayerInteractListener implements Listener {
         Bson giftFilter = Filters.eq("location", block.getLocation());
         Gift gift = main.getGifts().find(giftFilter).first();
         if (gift == null) return;
+        event.setCancelled(true);
         Bson filter = Filters.eq("uuid", uuid);
         User user = main.getUsers().find(filter).first();
         if (user == null) {
             user = new User();
             user.setUuid(uuid);
             user.setClaimedRewards(new ArrayList<>());
+            main.getUsers().insertOne(user);
         }
 
         switch (gift.getGiftState()) {
             case CLAIMED -> {
                 if (user.getClaimedRewards().contains(gift.getSerialId())) {
                     Message.CLAIM_ALREADY.get().send(player);
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASEDRUM, 1.0f, 1.2f);
                     break;
                 }
                 Message.CLAIM_ALREADY_ONCE.get().send(player);
@@ -91,6 +96,7 @@ public class PlayerInteractListener implements Listener {
             case CLAIMABLE -> {
                 if (user.getClaimedRewards().contains(gift.getSerialId())) {
                     Message.CLAIM_ALREADY.get().send(player);
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASEDRUM, 1.0f, 1.2f);
                     break;
                 }
                 int rewardAmount = gift.getRewards().size();
@@ -135,6 +141,8 @@ public class PlayerInteractListener implements Listener {
                 Utils.itemStacksAsString(gift.getRewards(), "&7, &e")
         ).send(player);
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.2f);
+        Particle.DustOptions options = new Particle.DustOptions(Color.LIME, 1.2f);
+        player.spawnParticle(Particle.REDSTONE, gift.getLocation().add(.5, 1, .5), 50, options);
     }
 
 }
